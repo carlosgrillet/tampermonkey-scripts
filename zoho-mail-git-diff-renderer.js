@@ -29,10 +29,10 @@
     // Single source of truth for diff line appearance. One entry per token
     // `type` produced by classifyDiff(); rendering just looks the type up.
     const THEME = {
-        add:     { fg: '#73b31d', bg: '#f2ffe9' },
-        del:     { fg: '#b31d28', bg: '#ffebe9' },
+        add:     { fg: '#3a5a0e', bg: '#f2ffe9' },
+        del:     { fg: '#6b1118', bg: '#ffebe9' },
         hunk:    { fg: '#5d1db3', bg: '#f6e9ff', bold: true },
-        meta:    { fg: '#1db3a8', bg: '#e9fdff', bold: true },
+        meta:    { fg: '#127a72', bg: '#e9fdff', bold: true },
         context: { fg: '#24292e', bg: '#ffffff' },
     };
 
