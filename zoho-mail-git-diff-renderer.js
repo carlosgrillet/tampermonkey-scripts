@@ -2,7 +2,7 @@
 // @name         Zoho Mail Git Diff Renderer v3
 // @namespace    carlosgrillet.me
 // @match        https://mail.zoho.eu/*
-// @version      2026-06-08
+// @version      2026-06-13
 // @description  try to take over the world!
 // @author       Carlos Grillet
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
@@ -246,7 +246,8 @@
         if (!patch) return;
 
         node[CONFIG.processedFlag] = true;
-        node.replaceWith(renderPatch(patch));
+        node.textContent = '';
+        node.appendChild(renderPatch(patch));
     }
 
     function apply() {
@@ -265,7 +266,9 @@
         apply();
         // Debounced so we don't re-scan on every mutation (including the ones
         // our own replaceWith() triggers), and don't thrash on big DOM updates.
-        const observer = new MutationObserver(debounce(apply, CONFIG.debounceMs));
+        // const observer = new MutationObserver(debounce(apply, CONFIG.debounceMs));
+        // observer.observe(document.body, { childList: true, subtree: true });
+        const observer = new MutationObserver(apply);
         observer.observe(document.body, { childList: true, subtree: true });
     }
 
