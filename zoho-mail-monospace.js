@@ -2,7 +2,7 @@
 // @name         Zoho Mail Monospace
 // @namespace    carlosgrillet.me
 // @match        https://mail.zoho.eu/*
-// @version      2026-06-08
+// @version      2026-06-13
 // @description  Zoho Mail Monospace font changer
 // @author       Carlos Grillet
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
@@ -10,16 +10,23 @@
 // ==/UserScript==
 
 (function() {
-    const apply = () => {
-        const el = document.querySelector('.zmMailWrapper')
-        if (el) el.style.fontFamily = 'monospace'
+    function debounce(fn, ms) {
+        let timer;
+        return () => {
+            clearTimeout(timer);
+            timer = setTimeout(fn, ms);
+        };
     }
 
-    // Run on load and observe DOM changes
-    // since Zoho is a SPA and renders dynamically
-    apply()
-    new MutationObserver(apply).observe(document.body, {
-        childList: true,
-        subtree: true
-    })
+    function apply() {
+        document.querySelectorAll('.zmMailWrapper').forEach(node => {
+            node.style.fontFamily = 'monospace'
+        });
+    }
+
+    apply();
+
+    // Debounced to don't re-scan on every mutation
+    const observer = new MutationObserver(debounce(apply, 100));
+    observer.observe(document.body, { childList: true, subtree: true });
 })()
