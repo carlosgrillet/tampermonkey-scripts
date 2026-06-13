@@ -20,7 +20,9 @@
 
     function apply() {
         document.querySelectorAll('.zmMailWrapper').forEach(node => {
-            node.style.fontFamily = 'monospace'
+            node.style.fontFamily = 'monospace';
+            node.style.fontSize = '14px';
+            node.style.overflowX = 'auto';
         });
     }
 
