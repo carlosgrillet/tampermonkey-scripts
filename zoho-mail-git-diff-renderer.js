@@ -2,7 +2,7 @@
 // @name         Zoho Mail Git Diff Renderer v3
 // @namespace    carlosgrillet.me
 // @match        https://mail.zoho.eu/*
-// @version      2026-06-13
+// @version      2026-06-08
 // @description  try to take over the world!
 // @author       Carlos Grillet
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
@@ -196,13 +196,27 @@
             const row = el('div', {
                 color: style.fg,
                 background: style.bg,
-                fontWeight: style.bold ? '600' : 'normal',
                 padding: '0 12px',
                 whiteSpace: 'pre',
             });
-            // A blank <div> generates no line box, so empty lines would
-            // collapse to 0px. Substitute a non-breaking space to keep height.
-            row.textContent = text.length ? text : '\u00A0';
+
+            if (type === 'hunk') {
+                // Split "@@ -1,7 +1,8 @@ optional function context"
+                // into position string and trailing context (function name).
+                const match = text.match(/^(@@ .+? @@)(.*)/);
+                if (match) {
+                    row.appendChild(el('span', { fontWeight: '600' }, match[1]));
+                    row.appendChild(el('span', { fontWeight: 'normal', fontStyle: 'italic' }, match[2]));
+                } else {
+                    row.textContent = text;
+                }
+            } else {
+                row.style.fontWeight = style.bold ? '600' : 'normal';
+                // A blank <div> generates no line box, so empty lines would
+                // collapse to 0px. Substitute a non-breaking space to keep height.
+                row.textContent = text.length ? text : '\u00A0';
+            }
+
             box.appendChild(row);
         }
         return box;
@@ -266,9 +280,7 @@
         apply();
         // Debounced so we don't re-scan on every mutation (including the ones
         // our own replaceWith() triggers), and don't thrash on big DOM updates.
-        // const observer = new MutationObserver(debounce(apply, CONFIG.debounceMs));
-        // observer.observe(document.body, { childList: true, subtree: true });
-        const observer = new MutationObserver(apply);
+        const observer = new MutationObserver(debounce(apply, CONFIG.debounceMs));
         observer.observe(document.body, { childList: true, subtree: true });
     }
 
